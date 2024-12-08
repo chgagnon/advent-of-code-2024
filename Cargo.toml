@@ -7,3 +7,6 @@ edition = "2021"
 
 [[bin]]
 name = "day1"
+
+[lib]
+name = "utils"
