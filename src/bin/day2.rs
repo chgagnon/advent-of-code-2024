@@ -7,22 +7,44 @@ enum Direction {
     Decreasing,
 }
 
-fn is_report_safe(report: Vec<i32>) -> bool {
-    let mut previous_level = report[0];
+fn is_report_safe_1(report: Vec<i32>) -> bool {
+    
+}
+
+fn is_report_safe_2(report: Vec<i32>) -> bool {
+    let mut previous_level = -1;
     let mut dir: Option<Direction> = None;
-    for level in &report[1..] {
+    let mut skipped_level_already = false;
+    for level in &report {
         let distance = (previous_level - level).abs();
         if distance < 1 || distance > 3 {
-            return false;
+            if skipped_level_already {
+                return false;
+            } else {
+                skipped_level_already = true;
+                continue;
+            }
         }
 
         match dir {
-            Some(d) => {
-                if *level > previous_level && d == Direction::Decreasing {
-                    return false;
+            Some(Direction::Increasing) => {
+                if *level < previous_level {
+                    if skipped_level_already {
+                        return false;
+                    } else {
+                        skipped_level_already = true;
+                        continue;
+                    }
                 }
-                if *level < previous_level && d == Direction::Increasing {
-                    return false;
+            }
+            Some(Direction::Decreasing) => {
+                if *level > previous_level {
+                    if skipped_level_already {
+                        return false;
+                    } else {
+                        skipped_level_already = true;
+                        continue;
+                    }
                 }
             }
             None => {
@@ -38,13 +60,15 @@ fn is_report_safe(report: Vec<i32>) -> bool {
     return true;
 }
 
-fn get_part_1() -> u32 {
+fn get_num_safe() -> u32 {
     let file_path = "inputs/day2.txt";
     let file = File::open(file_path).expect("File read failed");
     let reader = BufReader::new(file).lines();
 
+    let predicate = if use_part_2 {is_report_safe_2} else is_report_safe_1;
+
     let count = reader.fold(0, |acc, line| {
-        acc + is_report_safe(
+        acc + is_report_safe_2(
             line.unwrap()
                 .split(" ")
                 .map(|s| s.parse::<i32>().unwrap())
@@ -54,6 +78,6 @@ fn get_part_1() -> u32 {
     count
 }
 fn main() {
-    let num_safe = get_part_1();
+    let num_safe = get_num_safe();
     println!("There are {} safe reports", num_safe);
 }
