@@ -48,10 +48,12 @@ fn is_report_safe_1(report: Vec<i32>) -> bool {
 
 fn is_report_safe_2(report: Vec<i32>) -> bool {
     // If the first level can be removed and the rest of the report is safe,
-    // then the report is safe for part 2.
+    // then the report is safe under the definition for part 2.
     if is_report_safe_1(report[1..].to_vec()) {
         return true;
     }
+    println!("Was NOT safe after dropping first elem:");
+    dbg!(&report);
     // Since the report is not safe when the first level is removed, we can
     // assume that, even if the report must have a level removed, it will
     // not be the first level.
@@ -82,13 +84,13 @@ fn is_report_safe_2(report: Vec<i32>) -> bool {
     return true;
 }
 
-fn get_num_safe(predicate: fn(Vec<i32>) -> bool) -> u32 {
+fn get_num_safe(is_report_safe: fn(Vec<i32>) -> bool) -> u32 {
     let file_path = "inputs/day2.txt";
     let file = File::open(file_path).expect("File read failed");
     let reader = BufReader::new(file).lines();
 
     let count = reader.fold(0, |acc, line| {
-        acc + predicate(
+        acc + is_report_safe(
             line.unwrap()
                 .split(" ")
                 .map(|s| s.parse::<i32>().unwrap())
@@ -100,4 +102,30 @@ fn get_num_safe(predicate: fn(Vec<i32>) -> bool) -> u32 {
 fn main() {
     let num_safe = get_num_safe(is_report_safe_2);
     println!("There are {} safe reports", num_safe);
+}
+
+#[cfg(test)]
+mod tests {
+
+    macro_rules! check_safety {
+        ($vector:expr, $expected_result:expr) => {
+            {
+                let actual_result = is_report_safe_2($vector);
+                assert_eq!(actual_result, $expected_result);
+            }
+        };
+    }
+
+    use super::*;
+
+    #[test]
+    fn big_test_suite() {
+        check_safety!(vec![0, 1, 2, 3, 4, 5], true);
+        check_safety!(vec![1, 1, 1, 1, 1, 1], false);
+        check_safety!(vec![1, 1, 1, 10, 1, 1], false);
+        check_safety!(vec![0, 1, 25, 3, 4, 5], true);
+        check_safety!(vec![100, 1, 2, 3, 4, 5], true);
+        check_safety!(vec![66, 67, 68, 71, 72, 69], true);
+    }
+
 }
