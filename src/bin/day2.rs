@@ -66,7 +66,7 @@ fn is_report_safe_2_greedy(report: &Vec<i32>) -> bool {
             || !set_or_check_dir(&mut dir, previous_level, *level)
         {
             if skipped_level_already {
-                dbg!(&report);
+                // dbg!(&report);
                 return false;
             } else {
                 skipped_level_already = true;
@@ -111,7 +111,29 @@ fn get_num_safe(is_report_safe: fn(&Vec<i32>) -> bool) -> u32 {
     });
     count
 }
+
+fn report_disagreements(approach_1: fn(&Vec<i32>) -> bool, approach_2: fn(&Vec<i32>) -> bool) {
+    let file_path = "inputs/day2.txt";
+    let file = File::open(file_path).expect("File read failed");
+    let reader = BufReader::new(file).lines();
+
+    reader.for_each(|line| {
+        let report = line
+            .unwrap()
+            .split(" ")
+            .map(|s| s.parse::<i32>().unwrap())
+            .collect();
+    if approach_1(&report) != approach_2(&report) {
+        println!("Greedy fails on {:?}", report);
+    }
+    });
+
+}
+
 fn main() {
+
+    report_disagreements(is_report_safe_2_brute, is_report_safe_2_greedy);
+
     let choose_part_one = false;
 
     if choose_part_one {
