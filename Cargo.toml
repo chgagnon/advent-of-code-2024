@@ -5,8 +5,5 @@ edition = "2021"
 
 [dependencies]
 
-[[bin]]
-name = "day1"
-
 [lib]
 name = "utils"
