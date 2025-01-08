@@ -132,7 +132,7 @@ fn report_disagreements(approach_1: fn(&Vec<i32>) -> bool, approach_2: fn(&Vec<i
 
 fn main() {
 
-    report_disagreements(is_report_safe_2_brute, is_report_safe_2_greedy);
+    // report_disagreements(is_report_safe_2_brute, is_report_safe_2_greedy);
 
     let choose_part_one = false;
 
