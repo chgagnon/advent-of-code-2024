@@ -10,6 +10,10 @@ fn add_mul_result_to_sum(sum: &mut u32, line_chars: &mut Chars<'_>, op1_init: u3
         println!("Current char in parens is {}", c);
         match c {
             ',' => {
+                // Multiple commas are not allowed within a mul expr
+                if on_second_op {
+                    return;
+                }
                 on_second_op = true;
             },
             ')' => {
