@@ -1,7 +1,6 @@
 use std::fs;
 use std::collections::HashMap;
 use std::iter::zip;
-use utils;
 
 fn get_file_contents() -> Vec<Vec<i32>> {
     let file_path = "inputs/day1.txt";
